@@ -1,0 +1,193 @@
+﻿@model Celeste.R9.Estructura.Negocio.Empleado
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+    <div class="row">
+        <h2>Empleado</h2>
+        <br>
+        <h5>En este menu puedes agregar, actualizar y eliminar a los usuarios </h5>
+    </div>
+    <br />
+    <div class="row">
+        @*Busqueda Abierta*@
+        @using (Html.BeginForm("Index", "Telcel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="row row-cols-4">
+                <div class="form-group">
+                    <div class="col">
+                        @*@Html.LabelFor(model => model.Nombre)*@
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", @id = "txtNombre", @placeholder = "Nombre" })
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col">
+                        @*<center>*@
+                        <button type="submit" value="Buscar" class="btn btn-info"> Buscar </button>
+                        @* </center>*@
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    <div>
+        <div class="hidden" id="Formulario">
+            <div class="row">
+                <div class="col-lg-11 col-md-12">
+                    <h2>Formulario</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    @*formulario*@
+                    @using (Html.BeginForm("Add", "Telcel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+
+                        <div class="form-group-lg">
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    @Html.LabelFor(model => model.EmpleadoID, new { @class = "hidden" })
+                                    @Html.TextBoxFor(model => model.EmpleadoID, new { @class = "hidden form-control" })
+                                    @Html.ValidationMessageFor(model => model.EmpleadoID)
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(model => model.Nombre)
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="usernameicon"><i class="fa-solid fa-circle-user" style="color: chartreuse"></i></span>
+                                        @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", @id = "txtUserName" })
+                                        @Html.ValidationMessageFor(model => model.Nombre)
+                                    </div>
+                                </div>
+                            </div>
+
+                          
+
+                           
+
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.Label("Departamento")
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa-regular fa-user"></i>  </span>
+                                        @Html.DropDownListFor(model => model.Departamento.DepartamentoID, new SelectList(Model.Departamento.Departamentos, "DepartamentoID", "Nombre"), "Selecciona el departamento", new { @class = "form-control", @id = "ddlEstado" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.Label("Puesto")
+                                    <div class="input-group">
+                                        <span class="input-group-addon"> <i class="fa-solid fa-at"></i> </span>
+                                        @Html.DropDownListFor(model => model.Puesto.PuestoID, new SelectList(Model.Puesto.Puestos, "PuestoID", "Nombre"), "Selecciona el puesto", new { @class = "form-control", @id = "ddlEstado" })
+                                    </div>
+
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <br />
+                                    <div class="input-group">
+                                        <button type="submit" value="Guardar" class="btn btn-success"> <i class="fa-solid fa-floppy-disk fa-beat"></i>  Guardar </button>
+                               
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        
+    </div>
+        <hr>
+
+        <div class="row row-cols-1 ">
+            <div style="text-align: left;" class="col-md-1 col-md-offset-11">
+                <button type="button" class="btn btn-success" onclick="HideForm()">Agregar</button>
+                <hr />
+            </div>
+        </div>
+        @if (Model.Empleados != null)
+        {
+            //tabla
+            <table class="table table-bordered table-responsive table-striped" id="tblAlumno">
+                <thead style="background-color: chartreuse">
+                    <tr>
+                        <td class="hidden">EmpleadoID</td>
+                        <td class="text-center" style=" font-weight:bold;">Nombre</td>
+                        <td class="hidden">PuestoID</td>
+                        <td class="hidden">DepartamentoID</td>
+                        <td class="text-center" style=" font-weight:bold;">Departamento</td>
+                        <td class="text-center" style=" font-weight:bold;">Puesto</td>
+                        <td class="text-center" style=" font-weight:bold;">Eliminar</td>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (Celeste.R9.Estructura.Negocio.Empleado empleado in Model.Empleados)
+                    {
+                        <tr>
+                            <td class="hidden">@empleado.EmpleadoID</td>
+                            <td>@empleado.Nombre</td>
+                            <td class="hidden">@empleado.Puesto.PuestoID</td>
+                            <td class="hidden">@empleado.Departamento.DepartamentoID</td>
+                            <td>@empleado.Puesto.Nombre</td>
+                            <td>@empleado.Departamento.Nombre</td>
+                            <td class="text-center"><a class="btn btn-danger" href="@Url.Action("Eliminar", "Telcel", new { IdEmpleado = empleado.EmpleadoID })" onclick="return confirm('Estas seguro que deseas eliminar este registro?');"><i class="bi bi-trash-fill"></i></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">Ocurrio un error al realizar la consulta </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.material.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+
+    <script type="text/javascript">
+       function HideForm(){
+           var clas = document.getElementById('Formulario').className;
+           if (clas == 'hidden') {
+               document.getElementById('Formulario').className = 'container';
+            }
+            else{
+               document.getElementById('Formulario').className = 'hidden';
+            }
+
+    }
+    </script>
+}
+
+
+
